@@ -1,3 +1,6 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * This class implements the game we all love to
  * not play.
@@ -30,8 +33,7 @@ public class TicTacToe {
      * @return true if the location is an integer that represents one of the squares on the board ; false otherwise
      */
     public boolean isValid(int location) {
-        // TODO: add code here
-        return false;
+        return location >= 0 && location < board.length * board[0].length;
     }
 
     /**
@@ -41,8 +43,9 @@ public class TicTacToe {
      * @return true if the location is NOT occupied by a game piece; false otherwise
      */
     public boolean isEmpty(int location) {
-        // TODO: add code here
-        return false;
+        int row = location / board.length;
+        int col = location % board[0].length;
+        return board[row][col] == null;
     }
 
     /**
@@ -51,8 +54,7 @@ public class TicTacToe {
      * @return the number of moves remaining on the board
      */
     public int movesRemaining() {
-        // TODO: add code here
-        return 0;
+        return board.length * board[0].length - numOfMoves;
     }
 
     /**
@@ -62,8 +64,9 @@ public class TicTacToe {
      * @return the game piece at the provided location
      */
     public GamePiece getPiece(int location) {
-        // TODO: add code here
-        return null;
+        int row = location / board.length;
+        int col = location % board[0].length;
+        return new GamePiece(board[row][col]);
     }
 
     /**
@@ -78,8 +81,25 @@ public class TicTacToe {
                 {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, // vertical winning combinations
                 {0, 4, 8}, {2, 4, 6}             // diagonal winning combinations
         };
+        ArrayList<Integer> p1 = new ArrayList<>();
+        ArrayList<Integer> p2 = new ArrayList<>();
+        for(int loop1 =0; loop1 <board.length * board[0].length; loop1++){
+            if (getPiece(loop1) == player[0]) {
+                p1.add(loop1);
+            }
+            else if (getPiece(loop1) == player[1]){
+                p2.add(loop1);
+            }
+        }
+        for(int loop1 =0; loop1 < combos.length; loop1++) {
+            if (p1.contains(combos[loop1][0]) && p1.contains(combos[loop1][1]) && p1.contains(combos[loop1][2])){
+                winner = player[0];
+            }
+            else if (p2.contains(combos[loop1][0]) && p2.contains(combos[loop1][1]) && p2.contains(combos[loop1][2])){
+                winner = player[1];
+            }
+        }
 
-        // TODO: add code here
 
         return winner;
     }
@@ -113,7 +133,7 @@ public class TicTacToe {
      */
     public void clear() {
         // set all elements of 2d array to null
-        // TODO: add code here
+        board = new GamePiece[board[0].length][board.length];
     }
 
     /**
@@ -122,8 +142,19 @@ public class TicTacToe {
      */
     @Override
     public String toString() {
-        String s = "";
-        // TODO: add code here
-        return s;
+        String output = "";
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[row].length; col++) {
+                GamePiece piece = getPiece(row * board[row].length + col);
+                output += piece.toString();
+                if (col < board[row].length - 1) {
+                    output += "|";
+                }
+            }
+            if (row < board.length - 1) {
+                output += "\n-+-+-\n";
+            }
+        }
+        return output;
     }
 }
